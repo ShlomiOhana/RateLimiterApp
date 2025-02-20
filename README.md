@@ -1,9 +1,9 @@
 **Sliding Window**
 
 **Pros:**
-- Offers more precision and fairness as it distributes requests more evenly over the time window.
-- Reduces burstiness of requests compared to the absolute approach.
+- Offers requests distribution more evenly over time than the second approach.
+- Reduces burstiness of requests (many requests in a short period of time) compared to the absolute approach.
 
 **Cons:**
-- Slightly more complex than the absolute approach.
+- Slightly more complex to implement than the absolute approach.
 - Requires maintaining and frequently checking timestamps for each rate limit.

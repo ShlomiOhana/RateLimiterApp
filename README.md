@@ -1,4 +1,4 @@
-Sliding Window
+**Sliding Window**
 
 **Pros:**
 - Offers more precision and fairness as it distributes requests more evenly over the time window.

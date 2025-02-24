@@ -30,32 +30,29 @@ namespace RateLimiterApp.Services
         {
             var delayedTasks = new List<Task>();
 
-            for (int i = 0; i < _rateLimits.Count; i++)
+            await _semaphore.WaitAsync();
+            try
             {
-                await _semaphore.WaitAsync();
-                try
+                for (int i = 0; i < _rateLimits.Count; i++)
                 {
                     var queue = _requestQueues[i];
                     DateTime thresholdTime = DateTime.UtcNow - _rateLimits[i].TimeWindow;
 
                     queue.CleanQueue(thresholdTime);
-
                     if (queue.Count >= _rateLimits[i].MaxRequests)
                     {
                         var delay = TimeHelpers.CalculateDelay(queue, thresholdTime, _rateLimits[i].TimeWindow);
-
                         if (delay > TimeSpan.Zero)
                         {
                             delayedTasks.Add(Task.Delay(delay));
                         }
                     }
-
                     queue.Enqueue(DateTime.UtcNow);
                 }
-                finally
-                {
-                    _semaphore.Release();
-                }
+            }
+            finally
+            {
+                _semaphore.Release();
             }
 
             if (delayedTasks.Any())
@@ -65,8 +62,6 @@ namespace RateLimiterApp.Services
 
             await _func(argument);
         }
-
-
 
     }
 }

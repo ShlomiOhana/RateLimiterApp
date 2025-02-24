@@ -1,12 +1,15 @@
-﻿namespace RateLimiterApp.Extensions
+﻿using System.Collections.Concurrent;
+
+namespace RateLimiterApp.Extensions
 {
     public static class QueueExtensions
     {
-        public static void CleanQueue(this Queue<DateTime> queue, DateTime thresholdTime)
+        public static void CleanQueue(this ConcurrentQueue<DateTime> queue, DateTime thresholdTime)
         {
-            while (queue.Count > 0 && queue.Peek() < thresholdTime)
+            DateTime peeked;
+            while (queue.TryPeek(out peeked) && peeked < thresholdTime)
             {
-                queue.Dequeue();
+                queue.TryDequeue(out _);
             }
         }
     }

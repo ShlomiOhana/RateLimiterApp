@@ -21,7 +21,6 @@ namespace RateLimiterApp
             }
 
             var rateLimiter = new RateLimiterService<string>(rateLimits, PerformApiCall);
-
             for (int i = 0; i < 20; i++)
             {
                 await rateLimiter.Perform(i.ToString());

@@ -30,10 +30,10 @@ namespace RateLimiterApp.Services
         {
             var delayedTasks = new List<Task>();
 
-            await _semaphore.WaitAsync();
-            try
+            for (int i = 0; i < _rateLimits.Count; i++)
             {
-                for (int i = 0; i < _rateLimits.Count; i++)
+                await _semaphore.WaitAsync();
+                try
                 {
                     var queue = _requestQueues[i];
                     DateTime thresholdTime = DateTime.UtcNow - _rateLimits[i].TimeWindow;
@@ -52,11 +52,10 @@ namespace RateLimiterApp.Services
 
                     queue.Enqueue(DateTime.UtcNow);
                 }
-
-            }
-            finally
-            {
-                _semaphore.Release();
+                finally
+                {
+                    _semaphore.Release();
+                }
             }
 
             if (delayedTasks.Any())
@@ -66,6 +65,7 @@ namespace RateLimiterApp.Services
 
             await _func(argument);
         }
+
 
 
     }
